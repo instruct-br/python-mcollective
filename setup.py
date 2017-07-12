@@ -32,9 +32,7 @@ class PyTest(test.test):
 
 
 setuptools.setup(
-    setup_requires=('d2to1',),
     cmdclass={'test': PyTest},
-    d2to1=True,
     name='python-mcollective',
     version='0.0.1.dev7',
     url='https://github.com/rafaduran/python-mcollective',
