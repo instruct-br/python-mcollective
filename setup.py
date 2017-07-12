@@ -1,11 +1,5 @@
 import sys
-try:
-    import setuptools
-except ImportError:
-    from distribute_setup import use_setuptools
-    use_setuptools()
-    import setuptools
-
+import setuptools
 from pip import download, req
 from setuptools.command import test
 
@@ -37,9 +31,33 @@ class PyTest(test.test):
         sys.exit(errno)
 
 
-setuptools.setup(setup_requires=('d2to1',),
-                 install_requires=REQ,
-                 tests_require=TREQ,
-                 extras_require={'ssl': ('pycrypto', 'PyYAML')},
-                 cmdclass={'test': PyTest},
-                 d2to1=True)
+setuptools.setup(
+    setup_requires=('d2to1',),
+    cmdclass={'test': PyTest},
+    d2to1=True,
+    name='python-mcollective',
+    version='0.0.1.dev7',
+    url='https://github.com/rafaduran/python-mcollective',
+    author='Rafael Durán Castañeda',
+    author_email='rafadurancastaneda@gmail.com',
+    description=('Python bindings for MCollective'),
+    license='BSD',
+    packages=['pymco', 'pymco.connector', 'pymco.security',
+        'pymco.serializers', 'pymco.test'],
+    install_requires=REQ,
+    extras_require={'ssl': ('pycrypto', 'PyYAML')},
+    tests_require=TREQ,
+    zip_safe=False,
+    classifiers=[
+        'Development Status :: 1 - Planning',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Topic :: System :: Systems Administration'
+    ],
+)
