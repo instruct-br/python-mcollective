@@ -17,6 +17,8 @@ try:
 except ImportError:
     REQ.add('importlib')
 
+REQ = list(REQ)
+TREQ = list(TREQ)
 
 class PyTest(test.test):
     def finalize_options(self):
