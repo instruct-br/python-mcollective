@@ -1,16 +1,18 @@
 import sys
 import setuptools
-from pip import download, req
 from setuptools.command import test
 
-pipsess = download.PipSession()
-
-REQ = set(
-    [dep.name for dep in
-     req.parse_requirements('requirements/base.txt', session=pipsess)])
-TREQ = set(
-    [dep.name or dep.url for dep in
-     req.parse_requirements('requirements/tests.txt', session=pipsess)]) - REQ
+REQ = {'stomp.py>=4.0.10', 'six' }
+TREQ = {
+    'mock',
+    'jinja2',
+    'pytest',
+    'pytest-xdist<1.9',
+    'pytest-cov',
+    'pyyaml',
+    'pycrypto',
+    'pytest-timeout',
+} - REQ
 
 try:
     import importlib  # noqa
