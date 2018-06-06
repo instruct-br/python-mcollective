@@ -7,6 +7,7 @@ import functools
 import logging
 import threading
 import time
+from copy import copy
 
 from stomp import listener
 
@@ -125,6 +126,58 @@ class ResponseListener(listener.ConnectionListener):
             timeout -= (current_time - init_time)
             if timeout <= 0:
                 break
+
+class MultiResponseListener(listener.ConnectionListener):
+    """Listener that waits for multiple message responses.
+
+    :arg security: :py:class:`pymco.security.SecurityProvider` instance.
+    :arg use_b64: boolean to inform if the messages are encoded in base64.
+    :arg timeout: seconds we should wait for messages.
+    :arg condition: by default a :py:class:`threading.Condition` object
+        for synchronization purposes, but you can use any object
+        implementing the :py:meth:`wait` method and accepting a ``timeout``
+        argument.
+    """
+    def __init__(self, security, use_b64, timeout=30, logger=LOG):
+        self.logger = logger
+        self.use_b64 = use_b64
+        self.security = security
+        self.timeout = timeout
+        self.responses_condition = threading.Condition()
+        self.responses_lock = threading.Lock()
+        self.responses = []
+        self.logger.debug(
+            "initializing ResponseListener, timeout={t}".format(t=timeout)
+        )
+
+    def on_message(self, headers, body):
+        """Received messages hook.
+        :arg headers: message headers.
+        :arg body: message body.
+        """
+        with self.responses_condition:
+            self.logger.debug(
+                "on_message headers={h} body={b}".format(h=headers, b=body)
+            )
+            with self.responses_lock:
+                self.responses.append(
+                    self.security.decode(body, b64=self.use_b64)
+                )
+
+    def wait_on_message(self):
+        """Wait until we get a message.
+        :return: ``self``.
+        """
+        self.logger.debug("waiting until we receive a message")
+        remaining_time = copy(self.timeout)
+        while remaining_time > 0:
+            with self.responses_condition:
+                begin_time = time.time()
+                self.responses_condition.wait(remaining_time)
+                end_time = time.time()
+                remaining_time -= (end_time - begin_time)
+        self.logger.debug("left wait loop")
+        return self
 
 
 SingleResponseListener = functools.partial(ResponseListener, count=1)
