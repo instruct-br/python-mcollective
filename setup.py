@@ -38,7 +38,7 @@ class PyTest(test.test):
 setuptools.setup(
     cmdclass={'test': PyTest},
     name='python-mcollective',
-    version='0.0.1.dev7',
+    version='0.0.1.dev8',
     url='https://github.com/rafaduran/python-mcollective',
     author='Rafael Durán Castañeda',
     author_email='rafadurancastaneda@gmail.com',
