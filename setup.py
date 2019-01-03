@@ -2,7 +2,7 @@ import sys
 import setuptools
 from setuptools.command import test
 
-REQ = {'stomp.py>=4.0.10', 'six' }
+REQ = {'stomp.py==4.1.19', 'six', 'pycrypto'}
 TREQ = {
     'mock',
     'jinja2',
