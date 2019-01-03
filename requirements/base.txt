@@ -1,2 +1,3 @@
-stomp.py>=4.0.10
+stomp.py==4.1.19
+pycrypto
 six
